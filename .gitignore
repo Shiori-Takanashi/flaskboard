@@ -11,3 +11,4 @@ wheels/
 
 .docs/
 .ci_cache/
+.env.local
