@@ -2,7 +2,6 @@
 name = "flaskboard"
 version = "0.1.0"
 description = "Add your description here"
-readme = "README.md"
 authors = [
     { name = "Takanashi", email = "nao69alter@gmail.com" }
 ]
