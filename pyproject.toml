@@ -1,7 +1,7 @@
 [project]
 name = "flaskboard"
 version = "0.1.0"
-description = "Add your description here"
+description = "Dashboard by Flask."
 authors = [
     { name = "Takanashi", email = "nao69alter@gmail.com" }
 ]
