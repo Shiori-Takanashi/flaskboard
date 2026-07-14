@@ -12,3 +12,4 @@ wheels/
 .agents/
 
 .env.gcp
+.env.gcp-key.json

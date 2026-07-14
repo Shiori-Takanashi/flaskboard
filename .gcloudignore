@@ -4,20 +4,20 @@ build/
 dist/
 wheels/
 *.egg-info
-.agents/
 
 .venv
 
+.agents/
 .docs/
 .ci_cache/
-
-gcp.just
-
 .git/
 .github/
-tests/
-Justfile
 just/
-.pre-commit-config.yaml
+tests/
 
+Justfile
+.pre-commit-config.yaml
 README.md
+
+.env.gcp
+.env.gcp-key.json
