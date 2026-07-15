@@ -15,18 +15,24 @@ IMAGE_NAME := env("IMAGE_NAME")
 IMAGE_TAG := env("IMAGE_TAG")
 PORT := env("PORT")
 DESCRIPTION := env("DESCRIPTION")
+SA_KEY_FILE := env("SA_KEY_FILE")
 
 IMAGE_URL := REGION + "-docker.pkg.dev/" + PROJECT_ID + "/" + REPOSITORY + "/" + IMAGE_NAME + ":" + IMAGE_TAG
 
+
+# ==========================================
+# Authentication
+# ==========================================
+
+g-login:
+    @echo "Authenticating via Service Account Key..."
+    gcloud auth activate-service-account --key-file="{{SA_KEY_FILE}}"
 
 # ==========================================
 # Artifact Registry
 # ==========================================
 
 g-repo:
-    gcloud services enable artifactregistry.googleapis.com \
-        --project="{{PROJECT_ID}}"
-
     gcloud artifacts repositories describe "{{REPOSITORY}}" \
         --location="{{REGION}}" \
         --project="{{PROJECT_ID}}" \
@@ -47,8 +53,8 @@ g-build:
         --project="{{PROJECT_ID}}" \
         --region="{{REGION}}" \
         --tag="{{IMAGE_URL}}" \
-        --ignore-file=".gcloudignore"
-
+        --ignore-file=".gcloudignore" \
+        --default-buckets-behavior=regional-user-owned-bucket
 
 # ==========================================
 # Deploy
@@ -66,4 +72,4 @@ g-deploy:
 # Release
 # ==========================================
 
-g-release: g-build g-deploy
+g-release: g-login g-repo g-build g-deploy
