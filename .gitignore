@@ -11,3 +11,6 @@ wheels/
 
 .docs/
 .ci_cache/
+
+.env.flask
+.env.postgres
