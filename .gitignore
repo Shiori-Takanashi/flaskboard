@@ -9,5 +9,9 @@ wheels/
 # Virtual environments
 .venv
 
+# Local environment files
+.env.flask
+.env.postgres
+
 .docs/
 .ci_cache/
