@@ -3,20 +3,14 @@ import os
 from dotenv import find_dotenv, load_dotenv
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import URL, text
+from sqlalchemy import URL, func, select, text
 
 
 db = SQLAlchemy()
 
 
-def create_flask_app() -> Flask:
-    load_dotenv(find_dotenv(".env.postgres"))
-
-    load_dotenv(find_dotenv(".env.flask"))
-
-    app = Flask(__name__)
-
-    database_url = URL.create(
+def build_database_url() -> URL:
+    return URL.create(
         drivername="postgresql+psycopg",
         username=os.environ["DB_USER"],
         password=os.environ["DB_PASSWORD"],
@@ -24,23 +18,27 @@ def create_flask_app() -> Flask:
         port=int(os.environ["DB_PORT"]),
         database=os.environ["DB_NAME"],
     )
-    print(os.environ["DB_HOST"])
-    app.config["SQLALCHEMY_DATABASE_URI"] = database_url
+
+
+def create_flask_app() -> Flask:
+    load_dotenv(find_dotenv(".env.flask"))
+    app = Flask(__name__)
+    app.config["SQLALCHEMY_DATABASE_URI"] = build_database_url()
 
     db.init_app(app)
 
     return app
 
 
-def connect_app_to_postgres(app: Flask) -> None:
-    query = """
-        SELECT version();
-    """
+def get_postgres_version(app: Flask) -> str:
+    with app.app_context():
+        version = db.session.execute(select(func.version())).scalar_one()
+        return str(version)
 
+
+def connect_app_to_postgres(app: Flask) -> None:
     try:
-        with app.app_context():
-            with db.engine.connect() as connection:
-                postgres_version = connection.execute(text(query)).scalar_one()
+        postgres_version = get_postgres_version(app)
 
         print("データベース接続に成功しました。")
         print(f"PostgreSQLバージョン: {postgres_version}")
@@ -52,10 +50,33 @@ def connect_app_to_postgres(app: Flask) -> None:
         raise
 
 
+def print_tasks(app: Flask) -> None:
+    query = text(
+        """
+        SELECT *
+        FROM tasks
+        ORDER BY id;
+        """
+    )
+
+    with app.app_context():
+        tasks = db.session.execute(query).mappings()
+
+        for task in tasks:
+            task_id = task.get("id")
+            task_name = task.get("name")
+            task_is_done = task.get("is_done")
+
+            print(
+                f"{task_id:02d}: {task_name} [{'完了' if task_is_done else '未完了'}]"
+            )
+
+
 def run() -> Flask:
     print("Function: run")
     flask_app = create_flask_app()
     connect_app_to_postgres(flask_app)
+    print_tasks(flask_app)
     return flask_app
 
 
@@ -63,6 +84,7 @@ def main() -> None:
     print("Function: main")
     flask_app = create_flask_app()
     connect_app_to_postgres(flask_app)
+    print_tasks(flask_app)
 
 
 if __name__ == "__main__":
