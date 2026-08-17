@@ -68,20 +68,8 @@ def print_tasks(app: Flask) -> None:
             print(f"{task_id:02d}: {task_name}")
 
 
-def run() -> Flask:
-    print("Function: run")
+def main() -> Flask:
     flask_app = create_flask_app()
     connect_app_to_postgres(flask_app)
     print_tasks(flask_app)
     return flask_app
-
-
-def main() -> None:
-    print("Function: main")
-    flask_app = create_flask_app()
-    connect_app_to_postgres(flask_app)
-    print_tasks(flask_app)
-
-
-if __name__ == "__main__":
-    main()
