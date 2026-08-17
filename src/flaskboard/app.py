@@ -65,11 +65,7 @@ def print_tasks(app: Flask) -> None:
         for task in tasks:
             task_id = task.get("id")
             task_name = task.get("name")
-            task_is_done = task.get("is_done")
-
-            print(
-                f"{task_id:02d}: {task_name} [{'完了' if task_is_done else '未完了'}]"
-            )
+            print(f"{task_id:02d}: {task_name}")
 
 
 def run() -> Flask:
