@@ -3,14 +3,20 @@ import os
 from dotenv import find_dotenv, load_dotenv
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import URL, func, select, text
+from sqlalchemy import URL, text
 
 
-db = SQLAlchemy()
+def create_flask_alchemy() -> SQLAlchemy:
+    return SQLAlchemy()
 
 
-def build_database_url() -> URL:
-    return URL.create(
+def create_flask_app(db: SQLAlchemy) -> Flask:
+
+    app = Flask(__name__)
+
+    load_dotenv(find_dotenv(".env.flask"))
+
+    uri = URL.create(
         drivername="postgresql+psycopg",
         username=os.environ["DB_USER"],
         password=os.environ["DB_PASSWORD"],
@@ -18,30 +24,19 @@ def build_database_url() -> URL:
         port=int(os.environ["DB_PORT"]),
         database=os.environ["DB_NAME"],
     )
-
-
-def create_flask_app() -> Flask:
-    load_dotenv(find_dotenv(".env.flask"))
-    app = Flask(__name__)
-    app.config["SQLALCHEMY_DATABASE_URI"] = build_database_url()
+    app.config["SQLALCHEMY_DATABASE_URI"] = uri
 
     db.init_app(app)
 
     return app
 
 
-def get_postgres_version(app: Flask) -> str:
-    with app.app_context():
-        version = db.session.execute(select(func.version())).scalar_one()
-        return str(version)
-
-
-def connect_app_to_postgres(app: Flask) -> None:
+def check_connection(app: Flask, db: SQLAlchemy) -> None:
     try:
-        postgres_version = get_postgres_version(app)
-
+        with app.app_context():
+            with db.engine.connect:
+                pass
         print("データベース接続に成功しました。")
-        print(f"PostgreSQLバージョン: {postgres_version}")
 
     except Exception as error:
         print(
@@ -50,7 +45,7 @@ def connect_app_to_postgres(app: Flask) -> None:
         raise
 
 
-def print_tasks(app: Flask) -> None:
+def execute_query(app: Flask, db: SQLAlchemy) -> None:
     query = text(
         """
         SELECT *
@@ -69,7 +64,8 @@ def print_tasks(app: Flask) -> None:
 
 
 def main() -> Flask:
-    flask_app = create_flask_app()
-    connect_app_to_postgres(flask_app)
-    print_tasks(flask_app)
-    return flask_app
+    db = create_flask_alchemy()
+    app = create_flask_app(db)
+    check_connection(app, db)
+    execute_query(app, db)
+    return app
