@@ -13,6 +13,7 @@ dependencies = [
     "gunicorn>=26.0.0",
     "psycopg[binary]~=3.3.4",
     "python-dotenv~=1.2.2",
+    "ruff>=0.15.20",
     "sqlalchemy~=2.0.16",
 ]
 
