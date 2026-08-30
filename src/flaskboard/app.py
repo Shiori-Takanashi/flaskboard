@@ -16,7 +16,7 @@ def create_flask_app(db: SQLAlchemy) -> Flask:
 
     load_dotenv(find_dotenv(".env.flask"))
 
-    uri = URL.create(
+    url = URL.create(
         drivername="postgresql+psycopg",
         username=os.environ["DB_USER"],
         password=os.environ["DB_PASSWORD"],
@@ -24,7 +24,7 @@ def create_flask_app(db: SQLAlchemy) -> Flask:
         port=int(os.environ["DB_PORT"]),
         database=os.environ["DB_NAME"],
     )
-    app.config["SQLALCHEMY_DATABASE_URI"] = uri
+    app.config["SQLALCHEMY_DATABASE_URI"] = url
 
     db.init_app(app)
 
