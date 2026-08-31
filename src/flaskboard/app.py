@@ -65,7 +65,11 @@ def execute_query(app: Flask, db: SQLAlchemy) -> None:
 
 def main() -> Flask:
     db = create_flask_alchemy()
+    print("create_flask_alchemy関数が完了")
     app = create_flask_app(db)
+    print("create_flask_app関数が終了")
     check_connection(app, db)
+    print("check_connection関数が終了")
     execute_query(app, db)
+    print("excute_query関数が終了")
     return app
