@@ -34,7 +34,7 @@ def create_flask_app(db: SQLAlchemy) -> Flask:
 def check_connection(app: Flask, db: SQLAlchemy) -> None:
     try:
         with app.app_context():
-            with db.engine.connect:
+            with db.engine.connect():
                 pass
         print("データベース接続に成功しました。")
 
