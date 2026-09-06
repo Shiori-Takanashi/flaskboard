@@ -3,7 +3,7 @@ import os
 from dotenv import find_dotenv, load_dotenv
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import URL, text
+from sqlalchemy import URL
 
 
 def create_flask_alchemy() -> SQLAlchemy:
@@ -45,24 +45,6 @@ def check_connection(app: Flask, db: SQLAlchemy) -> None:
         raise
 
 
-def execute_query(app: Flask, db: SQLAlchemy) -> None:
-    query = text(
-        """
-        SELECT *
-        FROM tasks
-        ORDER BY id;
-        """
-    )
-
-    with app.app_context():
-        tasks = db.session.execute(query).mappings()
-
-        for task in tasks:
-            task_id = task.get("id")
-            task_name = task.get("name")
-            print(f"{task_id:02d}: {task_name}")
-
-
 def main() -> Flask:
     db = create_flask_alchemy()
     print("create_flask_alchemy関数が完了")
@@ -70,6 +52,4 @@ def main() -> Flask:
     print("create_flask_app関数が終了")
     check_connection(app, db)
     print("check_connection関数が終了")
-    execute_query(app, db)
-    print("excute_query関数が終了")
     return app
