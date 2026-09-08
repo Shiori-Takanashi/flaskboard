@@ -3,7 +3,7 @@ import os
 from dotenv import find_dotenv, load_dotenv
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import URL
+from sqlalchemy import URL, text
 
 
 def create_flask_alchemy() -> SQLAlchemy:
@@ -31,12 +31,11 @@ def create_flask_app(db: SQLAlchemy) -> Flask:
     return app
 
 
-def check_connection(app: Flask, db: SQLAlchemy) -> None:
+def check_connection_with_flask_sqlalchemy(app: Flask, db: SQLAlchemy) -> None:
     try:
         with app.app_context():
-            with db.engine.connect():
-                pass
-        print("データベース接続に成功しました。")
+            result = db.session.execute(text("SELECT 1"))
+            result.scalar_one()
 
     except Exception as error:
         print(
@@ -44,12 +43,15 @@ def check_connection(app: Flask, db: SQLAlchemy) -> None:
         )
         raise
 
+    else:
+        print("データベース接続に成功しました。")
+
 
 def main() -> Flask:
     db = create_flask_alchemy()
     print("create_flask_alchemy関数が完了")
     app = create_flask_app(db)
     print("create_flask_app関数が終了")
-    check_connection(app, db)
-    print("check_connection関数が終了")
+    check_connection_with_flask_sqlalchemy(app, db)
+    print("check_connection_with_flask_sqlalchemy関数が終了")
     return app
