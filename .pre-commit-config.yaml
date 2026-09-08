@@ -11,11 +11,15 @@ repos:
       - id: ruff-format
         types_or: [python, pyi, jupyter, pyproject]
 
-  - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.20.0
+  - repo: local
     hooks:
       - id: mypy
+        name: mypy
+        entry: uv run mypy
+        language: system
         types_or: [python, pyi, jupyter]
+        pass_filenames: false
+        always_run: true
 
   - repo: local
     hooks:
