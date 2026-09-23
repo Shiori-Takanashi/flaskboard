@@ -1,57 +1,28 @@
 import os
 
-from dotenv import find_dotenv, load_dotenv
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import URL, text
+from sqlalchemy import URL
 
 
-def create_flask_alchemy() -> SQLAlchemy:
-    return SQLAlchemy()
+db = SQLAlchemy()
+
+app = Flask(__name__)
+
+url = URL.create(
+    drivername="postgresql+psycopg",
+    username=os.environ["POSTGRES_USER"],
+    password=os.environ["POSTGRES_PASSWORD"],
+    database=os.environ["POSTGRES_DB"],
+    host=os.environ["DATABASE_HOST_NAME"],
+    port=int(os.environ["DATABASE_PORT"]),
+)
+
+app.config["SQLALCHEMY_DATABASE_URI"] = url
+
+db.init_app(app)
 
 
-def create_flask_app(db: SQLAlchemy) -> Flask:
-
-    app = Flask(__name__)
-
-    load_dotenv(find_dotenv(".env.flask"))
-
-    url = URL.create(
-        drivername="postgresql+psycopg",
-        username=os.environ["DB_USER"],
-        password=os.environ["DB_PASSWORD"],
-        host=os.environ["DB_HOST"],
-        port=int(os.environ["DB_PORT"]),
-        database=os.environ["DB_NAME"],
-    )
-    app.config["SQLALCHEMY_DATABASE_URI"] = url
-
-    db.init_app(app)
-
-    return app
-
-
-def check_connection_with_flask_sqlalchemy(app: Flask, db: SQLAlchemy) -> None:
-    try:
-        with app.app_context():
-            result = db.session.execute(text("SELECT 1"))
-            result.scalar_one()
-
-    except Exception as error:
-        print(
-            f"データベース接続に失敗しました。{type(error).__name__}: {error}"
-        )
-        raise
-
-    else:
-        print("データベース接続に成功しました。")
-
-
-def main() -> Flask:
-    db = create_flask_alchemy()
-    print("create_flask_alchemy関数が完了")
-    app = create_flask_app(db)
-    print("create_flask_app関数が終了")
-    check_connection_with_flask_sqlalchemy(app, db)
-    print("check_connection_with_flask_sqlalchemy関数が終了")
-    return app
+@app.get("/")
+def index() -> str:
+    return "Flaskboard"
