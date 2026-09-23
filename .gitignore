@@ -10,8 +10,12 @@ wheels/
 .venv
 
 # Local environment files
-.env.flask
-.env.postgres
+.env
 
+# Editor
+.vscode/
+
+# My dirs
 .docs/
 .ci_cache/
+.outs/
