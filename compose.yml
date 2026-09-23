@@ -2,13 +2,12 @@ services:
   db:
     image: postgres:18.4-trixie
     container_name: flaskboard-postgres
-    env_file:
-      - .env.postgres
-    ports:
-      - "5432:5432"
+    environment:
+      POSTGRES_USER: "${POSTGRES_USER:?POSTGRES_USER is required}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}"
+      POSTGRES_DB: "${POSTGRES_DB:?POSTGRES_DB is required}"
     volumes:
       - postgres_data:/var/lib/postgresql
-
     healthcheck:
       test:
         - CMD-SHELL
@@ -20,12 +19,21 @@ services:
   app:
     build: .
     container_name: flaskboard-app
-    env_file: .env.flask
+    environment:
+      POSTGRES_USER: "${POSTGRES_USER:?POSTGRES_USER is required}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}"
+      POSTGRES_DB: "${POSTGRES_DB:?POSTGRES_DB is required}"
+      DATABASE_HOST_NAME: "${DATABASE_HOST_NAME:?DATABASE_HOST_NAME is required}"
+      DATABASE_PORT: "${DATABASE_PORT:?DATABASE_PORT is required}"
+      APP_BIND_ADDRESS: "${APP_BIND_ADDRESS:?APP_BIND_ADDRESS is required}"
+      APP_BIND_PORT: "${APP_BIND_PORT:?APP_BIND_PORT is required}"
+      APP_PUBLISHED_PORT: "${APP_PUBLISHED_PORT:?APP_PUBLISHED_PORT is required}"
+      GUNICORN_CMD_ARGS: "--bind=${APP_BIND_ADDRESS}:${APP_BIND_PORT}"
     depends_on:
       db:
-       condition: service_healthy
+        condition: service_healthy
     ports:
-      - "8080:8080"
+      - "${APP_PUBLISHED_PORT}:${APP_BIND_PORT}"
 
 volumes:
   postgres_data:

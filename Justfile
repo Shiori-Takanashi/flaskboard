@@ -2,6 +2,7 @@
 # Global Settings
 # ==========================================
 
+# `dev/gunicorn`ブランチでは不要。
 set dotenv-load := true
 
 TARGETS := "src tests"

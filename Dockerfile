@@ -10,7 +10,6 @@ ENV PYTHONUNBUFFERED=1 \
 
 COPY pyproject.toml uv.lock ./
 
-
 RUN uv sync --frozen --no-install-project
 
 COPY . .
@@ -21,4 +20,4 @@ ENV PATH="/app/.venv/bin:$PATH"
 
 EXPOSE 8080
 
-CMD ["gunicorn", "--chdir", "src/flaskboard", "--bind", "0.0.0.0:8080", "--workers", "1", "--threads", "8", "--timeout", "0", "app:main()"]
+CMD ["gunicorn", "--chdir", "src/flaskboard", "--workers", "1", "--threads", "8", "--timeout", "0", "app:app"]
