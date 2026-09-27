@@ -19,3 +19,5 @@ wheels/
 .docs/
 .ci_cache/
 .outs/
+
+.dump/
