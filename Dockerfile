@@ -18,6 +18,4 @@ RUN uv sync --frozen
 
 ENV PATH="/app/.venv/bin:$PATH"
 
-EXPOSE 8080
-
 CMD ["gunicorn", "--chdir", "src/flaskboard", "--workers", "1", "--threads", "8", "--timeout", "0", "app:app"]
