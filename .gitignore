@@ -15,3 +15,5 @@ wheels/
 
 .docs/
 .ci_cache/
+.vscode
+.outs/
