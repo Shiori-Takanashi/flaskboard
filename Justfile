@@ -35,11 +35,17 @@ prepare-hooks:
 # Modification
 # ==========================================
 
-modify: ruff-modify
+modify: ruff-modify djl-modify djh-modify
 
 ruff-modify:
     uv run ruff check --fix {{TARGETS}}
     uv run ruff format {{TARGETS}}
+
+djl-modify:
+    uv run djlint --reformat {{TARGETS}}
+
+djh-modify:
+    uv run djhtml {{TARGETS}}
 
 # ==========================================
 # Verification
@@ -56,3 +62,20 @@ type:
 
 test:
     uv run pytest
+
+djl-verify:
+    uv run djlint --lint {{TARGETS}}
+
+
+# ==========================================
+# Flask Migrate
+# ==========================================
+
+db-init:
+    docker container exec flaskboard-app flask db init
+
+db-migrate:
+    docker container exec flaskboard-app flask db migrate
+
+db-upgrade:
+    docker container exec flaskboard-app flask db upgrade
