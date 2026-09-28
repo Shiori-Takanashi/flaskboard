@@ -28,12 +28,17 @@ services:
       APP_BIND_ADDRESS: "${APP_BIND_ADDRESS:?APP_BIND_ADDRESS is required}"
       APP_BIND_PORT: "${APP_BIND_PORT:?APP_BIND_PORT is required}"
       APP_PUBLISHED_PORT: "${APP_PUBLISHED_PORT:?APP_PUBLISHED_PORT is required}"
-      GUNICORN_CMD_ARGS: "--bind=${APP_BIND_ADDRESS}:${APP_BIND_PORT}"
+      FLASK_APP: "/app/src/flaskboard/app.py"
+      GUNICORN_CMD_ARGS: "--bind=${APP_BIND_ADDRESS}:${APP_BIND_PORT} --reload"
     depends_on:
       db:
         condition: service_healthy
     ports:
       - "${APP_PUBLISHED_PORT}:${APP_BIND_PORT}"
-
+    volumes:
+      - ./migrations:/app/migrations
+      - ./src/flaskboard/app.py:/app/src/flaskboard/app.py
+      - ./src/flaskboard/templates:/app/src/flaskboard/templates
+      - ./src/flaskboard/static:/app/src/flaskboard/static
 volumes:
   postgres_data:
