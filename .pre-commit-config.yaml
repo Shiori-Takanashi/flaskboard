@@ -1,15 +1,46 @@
 repos:
-  - repo: https://github.com/astral-sh/ruff-pre-commit
-    # Ruff version.
-    rev: v0.15.6
+  - repo: local
     hooks:
-      # Run the linter.
-      - id: ruff-check
-        types_or: [python, pyi, jupyter, pyproject]
-        args: [--fix]
-      # Run the formatter.
-      - id: ruff-format
-        types_or: [python, pyi, jupyter, pyproject]
+      - id: ruff-modify
+        name: ruff-modify
+        entry: bash -c "uv run ruff check --fix && uv run ruff format"
+        language: system
+        types_or: [python, pyi, pyproject]
+
+  - repo: local
+    hooks:
+      - id: ruff-verify
+        name: ruff-verify
+        entry: bash -c "uv run ruff check && uv run ruff format --check"
+        language: system
+        types_or: [python, pyi, pyproject]
+
+  - repo: local
+    hooks:
+      - id: jinja-modify
+        name: jinja-modify
+        entry: >
+          bash -c '
+            templates="src/flaskboard/templates";
+            uv run djlint - --reformat &&
+            uv run djhtml --tabwidth 4 "$templates"
+          '
+        language: system
+        files: ^src/flaskboard/templates/.*\.html$
+        pass_filenames: false
+
+  - repo: local
+    hooks:
+      - id: jinja-verify
+        name: jinja-verify
+        entry: >
+          bash -c '
+            templates="src/flaskboard/templates";
+            uv run djlint - --lint &&
+            uv run djhtml --check --tabwidth 4 "$templates"
+          '
+        language: system
+        files: ^src/flaskboard/templates/.*\.html$
 
   - repo: local
     hooks:
