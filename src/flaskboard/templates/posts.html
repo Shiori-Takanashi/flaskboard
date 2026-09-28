@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>投稿一覧</title>
+        <link rel="stylesheet"
+              href="{{ url_for('static', filename='css/posts.css') }}">
+    </head>
+    <body>
+        <main>
+            <h1>postテーブルのカラム</h1>
+            <table>
+                <thead>
+                    <tr>
+                        <th>カラム名</th>
+                        <th>型</th>
+                        <th>NULL</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for column in columns %}
+                        <tr>
+                            <td>{{ column["name"] }}</td>
+                            <td>{{ column["type"] }}</td>
+                            <td>{{ "可" if column["nullable"] else "不可" }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </main>
+    </body>
+</html>
