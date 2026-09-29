@@ -33,10 +33,14 @@ dev = [
 
 [tool.ruff]
 include = [
-   "src/flaskboard/*.py",
+   "src/*/.py",
+   "migrations/*/*.py",
+   "migrations/*.py",
    "tests/*.py",
+   "tests/*/*.py",
    "pyproject.toml"
 ]
+
 cache-dir = ".ci_cache/.ruff_cache"
 target-version = "py312"
 line-length = 80
@@ -80,3 +84,4 @@ max_line_length = 90
 preserve_leading_space = true
 preserve_blank_lines = true
 format_attribute_template_tags = true
+files = ["src/flaskboard/templates"]

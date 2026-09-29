@@ -6,6 +6,7 @@
 set dotenv-load := true
 
 TARGETS := "src tests"
+INCLUDE_01 := "migrations"
 HOOK_TYPES := "pre-commit pre-push"
 
 # ==========================================
@@ -35,17 +36,14 @@ prepare-hooks:
 # Modification
 # ==========================================
 
-modify: ruff-modify djl-modify djh-modify
+modify: ruff-modify djl-modify
 
 ruff-modify:
-    uv run ruff check --fix {{TARGETS}}
-    uv run ruff format {{TARGETS}}
+    uv run ruff check --fix {{TARGETS}} {{INCLUDE_01}}
+    uv run ruff format {{TARGETS}} {{INCLUDE_01}}
 
 djl-modify:
     uv run djlint --reformat {{TARGETS}}
-
-djh-modify:
-    uv run djhtml {{TARGETS}}
 
 # ==========================================
 # Verification
@@ -54,8 +52,8 @@ djh-modify:
 verify: ruff-verify type test
 
 ruff-verify:
-    uv run ruff check {{TARGETS}}
-    uv run ruff format --check {{TARGETS}}
+    uv run ruff check {{TARGETS}} {{INCLUDE_01}}
+    uv run ruff format --check {{TARGETS}} {{INCLUDE_01}}
 
 type:
     uv run mypy {{TARGETS}}
