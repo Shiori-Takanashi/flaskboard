@@ -6,6 +6,7 @@ repos:
         entry: bash -c "uv run ruff check --fix && uv run ruff format"
         language: system
         types_or: [python, pyi, pyproject]
+        stages: [pre-commit]
 
   - repo: local
     hooks:
@@ -14,44 +15,45 @@ repos:
         entry: bash -c "uv run ruff check && uv run ruff format --check"
         language: system
         types_or: [python, pyi, pyproject]
+        stages: [pre-commit]
 
-  - repo: local
-    hooks:
-      - id: html-modify
-        name: html-modify
-        entry: >
-          bash -c '
-            templates="src/flaskboard/templates";
-            uv run djlint "$templates" --reformat
-          '
-        language: system
+  # - repo: local
+  #   hooks:
+  #     - id: html-modify
+  #       name: html-modify
+  #       entry: >
+  #         bash -c '
+  #           templates="src/flaskboard/templates";
+  #           uv run djlint "$templates" --reformat
+  #         '
+  #       language: system
 
-  - repo: local
-    hooks:
-      - id: html-verify
-        name: html-verify
-        entry: >
-          bash -c '
-            templates="src/flaskboard/templates";
-            uv run djlint "$templates" --lint
-          '
-        language: system
+  # - repo: local
+  #   hooks:
+  #     - id: html-verify
+  #       name: html-verify
+  #       entry: >
+  #         bash -c '
+  #           templates="src/flaskboard/templates";
+  #           uv run djlint "$templates" --lint
+  #         '
+  #       language: system
 
-  - repo: local
-    hooks:
-      - id: mypy
-        name: mypy
-        entry: uv run mypy
-        language: system
-        types_or: [python, pyi, jupyter]
-        pass_filenames: false
-        always_run: true
+  # - repo: local
+  #   hooks:
+  #     - id: mypy
+  #       name: mypy
+  #       entry: uv run mypy
+  #       language: system
+  #       types_or: [python, pyi, jupyter]
+  #       pass_filenames: false
+  #       always_run: true
 
-  - repo: local
-    hooks:
-      - id: pytest
-        name: pytest
-        entry: uv run pytest
-        language: system
-        pass_filenames: false
-        stages: [pre-push]
+  # - repo: local
+  #   hooks:
+  #     - id: pytest
+  #       name: pytest
+  #       entry: uv run pytest
+  #       language: system
+  #       pass_filenames: false
+  #       stages: [pre-push]

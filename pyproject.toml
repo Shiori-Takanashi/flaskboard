@@ -33,11 +33,9 @@ dev = [
 
 [tool.ruff]
 include = [
-   "src/*/.py",
-   "migrations/*/*.py",
-   "migrations/*.py",
-   "tests/*.py",
-   "tests/*/*.py",
+   "src/**/*.py",
+   "migrations/**/*.py",
+   "tests/**/*.py",
    "pyproject.toml"
 ]
 
